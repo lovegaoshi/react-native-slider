@@ -99,10 +99,10 @@ using namespace facebook::react;
 
     // Trigger onValueChange to address https://github.com/react-native-community/react-native-slider/issues/212
     std::dynamic_pointer_cast<const RNCSliderEventEmitter>(_eventEmitter)
-    ->onRNCSliderValueChange(RNCSliderEventEmitter::OnRNCSliderValueChange{.value = static_cast<Float>(slider.value)});
+    ->onRNCSliderValueChange(RNCSliderEventEmitter::OnRNCSliderValueChange{.value = static_cast<Float>(value)});
 
     std::dynamic_pointer_cast<const RNCSliderEventEmitter>(_eventEmitter)
-    ->onRNCSliderSlidingComplete(RNCSliderEventEmitter::OnRNCSliderSlidingComplete{.value = static_cast<Float>(slider.value)});
+    ->onRNCSliderSlidingComplete(RNCSliderEventEmitter::OnRNCSliderSlidingComplete{.value = static_cast<Float>(value)});
 }
 
 - (void)sliderValueChanged:(RNCSlider *)sender
