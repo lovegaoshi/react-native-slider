@@ -2,21 +2,15 @@ package com.reactnativecommunity.slider;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.SeekBar;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.UIManagerHelper;
 import com.facebook.react.uimanager.ViewManagerDelegate;
-import com.facebook.react.uimanager.ViewProps;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.facebook.react.uimanager.events.EventDispatcher;
 import java.util.Map;
 import com.facebook.react.viewmanagers.RNCSliderManagerInterface;
 import com.facebook.react.viewmanagers.RNCSliderManagerDelegate;
@@ -28,9 +22,9 @@ import com.facebook.yoga.YogaMeasureOutput;
  * Manages instances of {@code ReactSlider}.
  */
 @ReactModule(name = ReactSliderManagerImpl.REACT_CLASS)
-public class ReactSliderManager extends SimpleViewManager<ReactSlider> implements RNCSliderManagerInterface<ReactSlider> {
+public class ReactSliderManager extends SimpleViewManager<ReactSliderView> implements RNCSliderManagerInterface<ReactSliderView> {
 
-  private final ViewManagerDelegate<ReactSlider> mDelegate;
+  private final ViewManagerDelegate<ReactSliderView> mDelegate;
 
   public ReactSliderManager() {
     mDelegate = new RNCSliderManagerDelegate<>(this);
@@ -38,53 +32,9 @@ public class ReactSliderManager extends SimpleViewManager<ReactSlider> implement
 
   @Nullable
   @Override
-  protected ViewManagerDelegate<ReactSlider> getDelegate() {
+  protected ViewManagerDelegate<ReactSliderView> getDelegate() {
     return mDelegate;
   }
-
-  private static final SeekBar.OnSeekBarChangeListener ON_CHANGE_LISTENER =
-          new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekbar, int progress, boolean fromUser) {
-              ReactSlider slider = (ReactSlider)seekbar;
-
-              progress = slider.getValidProgressValue(progress);
-              seekbar.setProgress(progress);
-
-              ReactContext reactContext = (ReactContext) seekbar.getContext();
-              if (fromUser) {
-                int reactTag = seekbar.getId();
-                UIManagerHelper.getEventDispatcherForReactTag(reactContext, reactTag)
-                      .dispatchEvent(new ReactSliderEvent(reactTag, slider.toRealProgress(progress), true));
-              }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekbar) {
-              ReactContext reactContext = (ReactContext) seekbar.getContext();
-              int reactTag = seekbar.getId();
-              ((ReactSlider)seekbar).isSliding(true);
-              UIManagerHelper.getEventDispatcherForReactTag(reactContext, reactTag)
-                      .dispatchEvent(new ReactSlidingStartEvent(
-                              reactTag,
-                              ((ReactSlider)seekbar).toRealProgress(seekbar.getProgress())));
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekbar) {
-              ReactContext reactContext = (ReactContext) seekbar.getContext();
-              ((ReactSlider)seekbar).isSliding(false);
-              int reactTag = seekbar.getId();
-
-              EventDispatcher eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, reactTag);
-
-              eventDispatcher.dispatchEvent(
-                      new ReactSlidingCompleteEvent(
-                              reactTag,
-                              ((ReactSlider)seekbar).toRealProgress(seekbar.getProgress()))
-              );
-            }
-          };
 
   @Override
   public String getName() {
@@ -92,132 +42,137 @@ public class ReactSliderManager extends SimpleViewManager<ReactSlider> implement
   }
 
   @Override
-  protected ReactSlider createViewInstance(ThemedReactContext context) {
+  protected ReactSliderView createViewInstance(ThemedReactContext context) {
     return ReactSliderManagerImpl.createViewInstance(context);
   }
 
   @Override
   @ReactProp(name = "disabled", defaultBoolean = false)
-  public void setDisabled(ReactSlider view, boolean disabled) {
+  public void setDisabled(ReactSliderView view, boolean disabled) {
     ReactSliderManagerImpl.setDisabled(view, disabled);
   }
 
   @Override
   @ReactProp(name = "value", defaultFloat = 0f)
-  public void setValue(ReactSlider view, float value) {
+  public void setValue(ReactSliderView view, float value) {
     ReactSliderManagerImpl.setValue(view, value);
   }
 
   @Override
   @ReactProp(name = "minimumValue", defaultFloat = 0f)
-  public void setMinimumValue(ReactSlider view, double value) {
+  public void setMinimumValue(ReactSliderView view, double value) {
     ReactSliderManagerImpl.setMinimumValue(view, value);
   }
 
   @Override
   @ReactProp(name = "maximumValue", defaultFloat = 0f)
-  public void setMaximumValue(ReactSlider view, double value) {
+  public void setMaximumValue(ReactSliderView view, double value) {
     ReactSliderManagerImpl.setMaximumValue(view, value);
   }
 
   @Override
   @ReactProp(name = "step", defaultFloat = 0f)
-  public void setStep(ReactSlider view, double value) {
+  public void setStep(ReactSliderView view, double value) {
     ReactSliderManagerImpl.setStep(view, value);
   }
 
   @Override
   @ReactProp(name = "thumbTintColor", customType = "Color")
-  public void setThumbTintColor(ReactSlider view, Integer color) {
+  public void setThumbTintColor(ReactSliderView view, Integer color) {
     ReactSliderManagerImpl.setThumbTintColor(view, color);
   }
 
   @Override
   @ReactProp(name = "minimumTrackTintColor", customType = "Color")
-  public void setMinimumTrackTintColor(ReactSlider view, Integer color) {
+  public void setMinimumTrackTintColor(ReactSliderView view, Integer color) {
     ReactSliderManagerImpl.setMinimumTrackTintColor(view, color);
   }
 
   @Override
   @ReactProp(name = "maximumTrackTintColor", customType = "Color")
-  public void setMaximumTrackTintColor(ReactSlider view, Integer color) {
+  public void setMaximumTrackTintColor(ReactSliderView view, Integer color) {
     ReactSliderManagerImpl.setMaximumTrackTintColor(view, color);
   }
 
   @Override
   @ReactProp(name = "inverted", defaultBoolean = false)
-  public void setInverted(ReactSlider view, boolean inverted) {
+  public void setInverted(ReactSliderView view, boolean inverted) {
     ReactSliderManagerImpl.setInverted(view, inverted);
+  }
+
+  @ReactProp(name = "useMaterial3", defaultBoolean = false)
+  public void setUseMaterial3(ReactSliderView view, boolean useMaterial3) {
+    view.setUseMaterial3(useMaterial3);
   }
 
   @Override
   @ReactProp(name = "accessibilityUnits")
-  public void setAccessibilityUnits(ReactSlider view, String accessibilityUnits) {
+  public void setAccessibilityUnits(ReactSliderView view, String accessibilityUnits) {
     ReactSliderManagerImpl.setAccessibilityUnits(view, accessibilityUnits);
   }
 
   @Override
   @ReactProp(name = "accessibilityIncrements")
-  public void setAccessibilityIncrements(ReactSlider view, ReadableArray accessibilityIncrements) {
+  public void setAccessibilityIncrements(ReactSliderView view, ReadableArray accessibilityIncrements) {
     ReactSliderManagerImpl.setAccessibilityIncrements(view, accessibilityIncrements);
   }
 
   @ReactProp(name = "lowerLimit")
-  public void setLowerLimit(ReactSlider view, float value) {
+  public void setLowerLimit(ReactSliderView view, float value) {
     ReactSliderManagerImpl.setLowerLimit(view, value);
   }
 
   @ReactProp(name = "upperLimit")
-  public void setUpperLimit(ReactSlider view, float value) {
+  public void setUpperLimit(ReactSliderView view, float value) {
     ReactSliderManagerImpl.setUpperLimit(view, value);
   }
 
   @Override
-  public void setSliderThickness(ReactSlider view, double value) {
+  public void setSliderThickness(ReactSliderView view, double value) {
     ReactSliderManagerImpl.setSliderThickness(view, value);
   }
 
   @Override
-  public void setSliderCornerRoundness(ReactSlider view, double value) {
+  public void setSliderCornerRoundness(ReactSliderView view, double value) {
     ReactSliderManagerImpl.setSliderCornerRoundness(view, value);
   }
 
   @Override
-  public void setThumbSize(ReactSlider view, double value) {
+  public void setThumbSize(ReactSliderView view, double value) {
     ReactSliderManagerImpl.setThumbSize(view, value, value);
   }
 
   @Override
   @ReactProp(name = "thumbImage")
-  public void setThumbImage(ReactSlider view, @androidx.annotation.Nullable ReadableMap source) {
+  public void setThumbImage(ReactSliderView view, @androidx.annotation.Nullable ReadableMap source) {
     ReactSliderManagerImpl.setThumbImage(view, source);
   }
 
   @Override
-  public void setTestID(ReactSlider view, @Nullable String value) {
+  public void setTestID(ReactSliderView view, @Nullable String value) {
     super.setTestId(view, value);
   }
 
   @Override
-  protected void addEventEmitters(final ThemedReactContext reactContext, final ReactSlider view) {
-    view.setOnSeekBarChangeListener(ON_CHANGE_LISTENER);
+  protected void addEventEmitters(final ThemedReactContext reactContext, final ReactSliderView view) {
+    view.setEventDispatcher(com.facebook.react.uimanager.UIManagerHelper.getEventDispatcherForReactTag(reactContext, view.getId()));
   }
 
   // these props are not available on Android, however we must override their setters
   @Override
-  public void setMinimumTrackImage(ReactSlider view, @Nullable ReadableMap readableMap) {}
+  public void setMinimumTrackImage(ReactSliderView view, @Nullable ReadableMap readableMap) {}
 
   @Override
-  public void setMaximumTrackImage(ReactSlider view, @Nullable ReadableMap readableMap) {}
+  public void setMaximumTrackImage(ReactSliderView view, @Nullable ReadableMap readableMap) {}
 
   @Override
-  public void setTrackImage(ReactSlider view, @Nullable ReadableMap value) {}
+  public void setTrackImage(ReactSliderView view, @Nullable ReadableMap value) {}
 
   @Override
-  public void setTapToSeek(ReactSlider view, boolean value) {}
+  public void setTapToSeek(ReactSliderView view, boolean value) {}
 
   @Override
-  public void setVertical(ReactSlider view, boolean value) {}
+  public void setVertical(ReactSliderView view, boolean value) {}
 
   @Override
   public long measure(
@@ -231,6 +186,7 @@ public class ReactSliderManager extends SimpleViewManager<ReactSlider> implement
           YogaMeasureMode heightMode,
           @Nullable float[] attachmentsPositions) {
     ReactSlider view = new ReactSlider(context, null);
+    view.setSplitTrack(false);
     int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
     view.measure(measureSpec, measureSpec);
     return YogaMeasureOutput.make(

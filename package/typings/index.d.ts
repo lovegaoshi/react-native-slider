@@ -15,6 +15,10 @@ export interface SliderPropsAndroid extends ReactNative.ViewProps {
    */
   thumbTintColor?: string;
   /**
+   * Uses the Android Material 3 Compose slider instead of the legacy SeekBar implementation.
+   */
+  useMaterial3?: boolean;
+  /**
    * modifies slider thickness. Android only.
    */
   sliderThickness?: number;

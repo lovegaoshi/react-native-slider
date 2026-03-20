@@ -92,6 +92,7 @@ To use this library you need to ensure you are using the correct version of Reac
 | `tapToSeek` | Permits tapping on the slider track to set the thumb position.<br/>Defaults to false on iOS. No effect on Android or Windows. | bool | iOS |
 | `inverted` | Reverses the direction of the slider.<br/>Default value is false. | bool | |
 | `vertical` | Changes the orientation of the slider to vertical, if set to `true`.<br/>Default value is false. | bool | Windows |
+| `useMaterial3` | Uses the Android Material 3 Compose slider instead of the legacy `SeekBar` implementation.<br/>Default value is false.<br/>When enabled, Android-only legacy styling props such as `sliderThickness`, `sliderCornerRoundness`, `thumbSize`, and `thumbImage` are not applied. | bool | Android |
 | `thumbTintColor` | Color of the foreground switch grip.<br/>**NOTE:** This prop will override the `thumbImage` prop set, meaning that if both `thumbImage` and `thumbTintColor` will be set, image used for the thumb may not be displayed correctly! | [color](https://reactnative.dev/docs/colors) | Android |
 | `maximumTrackImage` | Assigns a maximum track image. Only static images are supported. The leftmost pixel of the image will be stretched to fill the track. | Image<br/>.propTypes<br/>.source | iOS |
 | `minimumTrackImage` | Assigns a minimum track image. Only static images are supported. The rightmost pixel of the image will be stretched to fill the track. | Image<br/>.propTypes<br/>.source | iOS |

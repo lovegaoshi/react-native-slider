@@ -18,6 +18,7 @@ export interface NativeProps extends ViewProps {
   accessibilityIncrements?: ReadonlyArray<string>;
   disabled?: WithDefault<boolean, false>;
   inverted?: WithDefault<boolean, false>;
+  useMaterial3?: WithDefault<boolean, false>;
   vertical?: WithDefault<boolean, false>;
   tapToSeek?: WithDefault<boolean, false>;
   maximumTrackImage?: ImageSource;

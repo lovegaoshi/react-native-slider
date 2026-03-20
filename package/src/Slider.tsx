@@ -41,6 +41,10 @@ type WindowsProps = Readonly<{
 
 type AndroidProps = Readonly<{
   /**
+   * Uses the Android Material 3 Compose slider instead of the legacy SeekBar implementation.
+   */
+  useMaterial3?: boolean;
+  /**
    * modifies slider thickness. Android only.
    */
   sliderThickness?: number;
@@ -188,6 +192,12 @@ type Props = ViewProps &
      * Default value is false.
      */
     inverted?: boolean;
+
+    /**
+     * Uses the Android Material 3 Compose slider instead of the legacy SeekBar implementation.
+     * Android only.
+     */
+    useMaterial3?: boolean;
 
     /**
      * Component to be rendered for each step indicator.
