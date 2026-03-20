@@ -21,6 +21,7 @@ const SliderExample = (props: SliderProps) => {
     <View style={{alignItems: 'center'}}>
       <Text style={styles.text}>{value && +value.toFixed(3)}</Text>
       <Slider
+        useMaterial3
         step={0.5}
         style={[styles.slider, props.style]}
         {...props}
