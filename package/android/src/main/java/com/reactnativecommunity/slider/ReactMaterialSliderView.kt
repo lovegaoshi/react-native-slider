@@ -2,7 +2,9 @@ package com.reactnativecommunity.slider
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -44,62 +46,26 @@ class ReactMaterialSliderView @JvmOverloads constructor(
   private var eventListener: EventListener? = null
   private var dragging = false
   private val composeView = ComposeView(context)
+  private var contentInitialized = false
 
   init {
-    composeView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+    composeView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
     composeView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
-    composeView.setContent {
-      MaterialTheme {
-        val rangeStart = minimumValueState.toFloat()
-        val rangeEnd = maxOf(maximumValueState, minimumValueState).toFloat()
-        val sliderColors =
-          if (
-            thumbTintColorArgb != Int.MIN_VALUE ||
-              minimumTrackTintColorArgb != Int.MIN_VALUE ||
-              maximumTrackTintColorArgb != Int.MIN_VALUE
-          ) {
-            SliderDefaults.colors(
-              thumbColor = thumbTintColorArgb.toComposeColor(),
-              activeTrackColor = minimumTrackTintColorArgb.toComposeColor(),
-              inactiveTrackColor = maximumTrackTintColorArgb.toComposeColor(),
-            )
-          } else {
-            SliderDefaults.colors()
-          }
+    composeView.addOnAttachStateChangeListener(
+      object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {
+          ensureContent()
+          composeView.removeOnAttachStateChangeListener(this)
+        }
 
-        Slider(
-          value = normalizeValue(sliderValueState).toFloat(),
-          onValueChange = { next ->
-            val adjusted = normalizeValue(next.toDouble())
-            if (!dragging) {
-              dragging = true
-              eventListener?.onSlidingStart(adjusted)
-            }
-            if (adjusted != sliderValueState) {
-              sliderValueState = adjusted
-              eventListener?.onValueChange(adjusted, true)
-            }
-          },
-          valueRange = rangeStart..rangeEnd,
-          enabled = !disabledState,
-          steps = materialSteps(),
-          onValueChangeFinished = {
-            if (dragging) {
-              dragging = false
-              eventListener?.onSlidingComplete(sliderValueState)
-            }
-          },
-          modifier =
-            Modifier.semantics {
-              accessibilityDescription()?.let {
-                stateDescription = it
-              }
-            },
-          colors = sliderColors,
-        )
-      }
-    }
+        override fun onViewDetachedFromWindow(v: View) = Unit
+      },
+    )
     addView(composeView)
+    if (composeView.isAttachedToWindow) {
+      ensureContent()
+    }
   }
 
   fun setEventListener(listener: EventListener?) {
@@ -167,6 +133,67 @@ class ReactMaterialSliderView @JvmOverloads constructor(
   fun setThumbSize(@Suppress("UNUSED_PARAMETER") size: Double) {}
 
   fun setThumbImageUri(@Suppress("UNUSED_PARAMETER") uri: String?) {}
+
+  private fun ensureContent() {
+    if (contentInitialized) {
+      return
+    }
+
+    contentInitialized = true
+    composeView.setContent {
+      MaterialTheme {
+        val rangeStart = minimumValueState.toFloat()
+        val rangeEnd = maxOf(maximumValueState, minimumValueState).toFloat()
+        val sliderColors =
+          if (
+            thumbTintColorArgb != Int.MIN_VALUE ||
+              minimumTrackTintColorArgb != Int.MIN_VALUE ||
+              maximumTrackTintColorArgb != Int.MIN_VALUE
+          ) {
+            SliderDefaults.colors(
+              thumbColor = thumbTintColorArgb.toComposeColor(),
+              activeTrackColor = minimumTrackTintColorArgb.toComposeColor(),
+              inactiveTrackColor = maximumTrackTintColorArgb.toComposeColor(),
+            )
+          } else {
+            SliderDefaults.colors()
+          }
+
+        Slider(
+          value = normalizeValue(sliderValueState).toFloat(),
+          onValueChange = { next ->
+            val adjusted = normalizeValue(next.toDouble())
+            if (!dragging) {
+              dragging = true
+              eventListener?.onSlidingStart(adjusted)
+            }
+            if (adjusted != sliderValueState) {
+              sliderValueState = adjusted
+              eventListener?.onValueChange(adjusted, true)
+            }
+          },
+          valueRange = rangeStart..rangeEnd,
+          enabled = !disabledState,
+          steps = materialSteps(),
+          onValueChangeFinished = {
+            if (dragging) {
+              dragging = false
+              eventListener?.onSlidingComplete(sliderValueState)
+            }
+          },
+          modifier =
+            Modifier
+              .fillMaxWidth()
+              .semantics {
+                accessibilityDescription()?.let {
+                  stateDescription = it
+                }
+              },
+          colors = sliderColors,
+        )
+      }
+    }
+  }
 
   private fun normalizeValue(value: Double): Double {
     val actualMinimum = maxOf(minimumValueState, lowerLimitState)
