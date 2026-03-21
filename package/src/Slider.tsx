@@ -52,6 +52,12 @@ type AndroidProps = Readonly<{
    * modifies thumb size. Android only.
    */
   thumbSize?: number;
+  /**
+   * Uses the Android Material 3 Compose slider instead of the legacy SeekBar implementation.
+   * Android only.
+   */
+  useMaterial3?: boolean;
+
 }>;
 
 type IOSProps = Readonly<{

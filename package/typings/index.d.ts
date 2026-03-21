@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { FC } from 'react';
+import {FC} from 'react';
 import * as ReactNative from 'react-native';
-import { ImageURISource } from 'react-native';
+import {ImageURISource} from 'react-native';
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -26,6 +26,10 @@ export interface SliderPropsAndroid extends ReactNative.ViewProps {
    * modifies thumb size. Android only.
    */
   thumbSize?: number;
+  /**
+   * Uses the Android Material 3 Compose slider instead of the legacy SeekBar implementation.
+   */
+  useMaterial3?: boolean;
 }
 
 export interface SliderRef {
@@ -184,7 +188,7 @@ export interface SliderProps
   StepMarker?: FC<MarkerProps>;
 
   /**
-   * 
+   *
    */
   renderStepNumber?: boolean;
 

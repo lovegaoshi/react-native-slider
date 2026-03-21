@@ -1,3 +1,8 @@
+plugins {
+    id 'org.jetbrains.kotlin.plugin.compose'
+
+}
+
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
@@ -104,6 +109,9 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
 }
 
 dependencies {
@@ -115,4 +123,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    implementation "androidx.compose.runtime:runtime:1.10.5"
+    implementation "androidx.compose.runtime:runtime-livedata:1.10.5"
+    implementation "androidx.compose.runtime:runtime-rxjava2:1.10.5"
 }

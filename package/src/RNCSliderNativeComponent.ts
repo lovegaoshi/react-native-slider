@@ -41,6 +41,7 @@ export interface NativeProps extends ViewProps {
   sliderThickness?: Double;
   sliderCornerRoundness?: Double;
   thumbSize?: Double;
+  useMaterial3?: WithDefault<boolean, false>;
 }
 
 export default codegenNativeComponent<NativeProps>('RNCSlider', {
